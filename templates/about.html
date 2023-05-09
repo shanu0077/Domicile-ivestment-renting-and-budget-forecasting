@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+</head>
+
+</header>
+
+<body>
+   <!-- rent -->
+   <div class="our_room">
+      <div class="container">
+         <div class="row">
+            <div class="col-md-12">
+               <div class="titlepage">
+                  <h2>Appartments for Rent</h2>
+                  <!-- <p>Lorem Ipsum available, but the majority have suffered </p> -->
+               </div>
+            </div>
+         </div>
+         <div class="row">
+            {%for i in appartments%}
+            {% if 'rent' in i.rent%}
+            <div class="col-md-4 col-sm-6">
+               <div id="serv_hover" class="room">
+                  <div class="room_img">
+                     <img src="{{i.cimage.url}}" />
+                  </div>
+                  <div class="bed_room">
+                     <h3>{{i.appartmentname }}</h3>
+                     <p>{{i.propdesc}}</p>
+                  </div>
+                  <form method="post" action="{% url 'accounts:about' %}">
+                     {% csrf_token %}
+                     <button class="send_btn" type="submit" value="Book Now" href="{% url 'accounts:about' %}"
+                        style="width: 90px; background-color: darkcyan; border-radius: 20px;">Book Now</button>
+                  </form>
+               </div>
+
+            </div>
+            {% endif %}
+            {%endfor%}
+         </div>
+      </div>
+   </div>
+
+
+
+   <!-- sale -->
+   <div class="our_room">
+      <div class="container">
+         <div class="row">
+            <div class="col-md-12">
+               <div class="titlepage">
+                  <h2>Appartments For Sale</h2>
+                  <!-- <p>Lorem Ipsum available, but the majority have suffered </p> -->
+               </div>
+            </div>
+         </div>
+
+         <div class="row">
+            {%for i in appartments%}
+            {% if 'sale' in i.rent%}
+            <div class="col-md-4 col-sm-6">
+               <div id="serv_hover" class="room">
+                  <div class="room_img">
+                     <img src="{{i.cimage.url}}" />
+                  </div>
+                  <div class="bed_room">
+                     <h3>{{i.appartmentname }}</h3>
+                     <p>{{i.propdesc}}</p>
+                     <form method="post" action="{% url 'accounts:about' %}">
+                        {% csrf_token %}
+                        <button class="send_btn" type="submit" value="Book Now" href="{% url 'accounts:about' %}"
+                           style="width: 90px; background-color: darkcyan; border-radius: 20px;">Book Now</button>
+                     </form>
+                  </div>
+               </div>
+            </div>
+            {% endif %}
+            {%endfor%}
+         </div>
+      </div>
+   </div>
+</body>
+
+</html>
