@@ -4,6 +4,7 @@ from accounts.models import *
 from django.http import HttpResponse
 import datetime
 
+
 def index(request):
     appartments = Appartment.objects.filter(status=1)
     today=datetime.datetime.now().date()

@@ -174,7 +174,12 @@ def delete(request, id):
     # Redirect the user to the apartment admin view
     return redirect('accounts:admin')
 
-
+def bookings(request):
+    bookings = appartment_bookings.objects.all()
+    context = {
+        'appartment_bookings': bookings
+    }
+    return render(request, 'bookings.html', context)
 
 def editbtn(request, id):
     appartments = Appartment.objects.get(ap_id=id)
