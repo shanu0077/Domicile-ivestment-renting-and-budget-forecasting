@@ -38,30 +38,32 @@
     <header>
         <!-- header inner -->
         <div class="header">
-           <div class="container">
-              <div class="row">
-                 <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
-                    <nav class="navigation navbar navbar-expand-md navbar-dark ">
-                       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false" aria-label="Toggle navigation">
-                       <span class="navbar-toggler-icon"></span>
-                       </button>
-                       <div class="collapse navbar-collapse" id="navbarsExample04">
-                          <ul class="navbar-nav mr-auto">
-                          
-                              <li class="nav-item"></li>
-                              <a class="nav-link" href="{% url 'accounts:admin' %}">Home</a>
-                              </li>
-                                <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
-                             </li>
-                          </ul>
-                       </div>
-                    </nav>
-                 </div>
-              </div>
-           </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-9">
+                        <nav class="navigation navbar navbar-expand-md navbar-dark ">
+                            <button class="navbar-toggler" type="button" data-toggle="collapse"
+                                data-target="#navbarsExample04" aria-controls="navbarsExample04" aria-expanded="false"
+                                aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarsExample04">
+                                <ul class="navbar-nav mr-auto">
+
+                                    <li class="nav-item"></li>
+                                    <a class="nav-link" href="{% url 'accounts:admin' %}">Home</a>
+                                    </li>
+                                    <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
         </div>
-     </header>
-    
+    </header>
+
     <br><br>
     <!-- rent -->
     <style>
@@ -97,10 +99,10 @@
             cursor: pointer;
         }
     </style>
-<div class="titlepage">
-    <h2>BOOKING OF RENT APPARTMENTS</h2>
-    <!-- <p>Lorem Ipsum available, but the majority have suffered </p> -->
-</div>
+    <div class="titlepage">
+        <h2>BOOKING OF RENT APPARTMENTS</h2>
+        <!-- <p>Lorem Ipsum available, but the majority have suffered </p> -->
+    </div>
     <table width="1060px" align="center">
         <thead>
             <tr>
@@ -128,8 +130,9 @@
                 {% else %}
                 <td>Pending</td>
                 {% endif %}
-                <td><button style="width: 40px; border-radius: 50px; height: 40px; align-items: center;"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                            fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                <td><button style="width: 40px; border-radius: 50px; height: 40px; align-items: center;"><svg
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-trash" viewBox="0 0 16 16">
                             <path
                                 d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
                             <path
@@ -144,7 +147,7 @@
 
     <div class="titlepage">
         <h2>BOOKING OF SALE APPARTMENTS</h2>
-        <!-- <p>Lorem Ipsum available, but the majority have suffered </p> -->
+
     </div>
     <table width="1060px" align="center">
         <thead>
@@ -159,27 +162,31 @@
             </tr>
         </thead>
         <tbody>
-            {% for i in appartment_bookings %}
-                <tr>
-                    <td>{{ i.b_id }}</td>
-                    <td>{{ i.user }}: {{ i.user_id }}</td>
-                    <td>{{ i.appartment_id }}</td>
-                    <td>{{ i.appartment_name }}</td>
-                    <td>{{ i.date }}</td>
-                    {% if i.payment_status == 1 %}
-                        <td>Done</td>
-                    {% else %}
-                        <td>Pending</td>
-                    {% endif %}
-                    <td>
-                        <button style="width: 40px; border-radius: 50px; height: 40px; align-items: center;">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
-                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
-                            </svg>
-                        </button>
-                    </td>
-                </tr>
+            {%for i in appb%}
+
+            <tr>
+                <td>{{ i.b_id }}</td>
+                <td>{{ i.user }}: {{ i.user_id }}</td>
+                <td>{{ i.appartment_id }}</td>
+                <td>{{ i.appartment_name }}</td>
+                <td>{{ i.date }}</td>
+                {% if i.payment_status == 1 %}
+                <td>Done</td>
+                {% else %}
+                <td>Pending</td>
+                {% endif %}
+                <td>
+                    <button style="width: 40px; border-radius: 50px; height: 40px; align-items: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-trash" viewBox="0 0 16 16">
+                            <path
+                                d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
+                            <path
+                                d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
+                        </svg>
+                    </button>
+                </td>
+            </tr>
             {% endfor %}
         </tbody>
     </table>

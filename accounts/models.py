@@ -67,8 +67,8 @@ class appartment_booking(models.Model):
     payment_status=models.BooleanField(default=0)
 
 
-class appartment_bookings(models.Model):
-    b_id = models.AutoField(primary_key=True)
+class ab(models.Model):
+    ab_id = models.AutoField(primary_key=True)
     appartment_name = models.CharField(max_length=50,default="")
     appartment_id = models.CharField(max_length=50,default="")
     user = models.CharField(max_length=50,default="")
@@ -77,3 +77,10 @@ class appartment_bookings(models.Model):
     date=models.DateField()
     status= models.BooleanField(default=0)
     payment_status=models.BooleanField(default=0)
+
+class comment(models.Model):
+    
+    user = models.CharField(max_length=50,default="")
+    appartment_name = models.CharField(max_length=50,default="")
+    ap_id=models.IntegerField(null=True)
+    cmt=models.CharField(max_length=250,default="")

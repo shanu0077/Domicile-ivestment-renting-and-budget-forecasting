@@ -98,10 +98,12 @@
                      <p>{{i.propdesc}}</p>
                      
                      <a href="{% url 'accounts:edit' i.ap_id %}"><button  class="send_btn" type="button" value="Update"style="width: 90px; background-color: darkcyan; border-radius: 20px;">Update</button></a>
-                     <a href="{% url 'accounts:delete' i.ap_id %}"><button  class="send_btn" type="button" value="Update"style="width: 90px; background-color: darkcyan; border-radius: 20px;">Delete</button></a> 
+                     <a href="{% url 'accounts:delete' i.ap_id %}"><button  class="send_btn" type="button" value="Update"style="width: 90px; background-color: red; border-radius: 20px;">Delete</button></a> 
 
                    </div>
-                   
+                     <a
+                        style="border-radius: 20px; background-color: cadetblue; height: 40px; width: 90px;" href="{%url 'accounts:view_fb' i.ap_id%}">View Feedbacks</a>
+               
                  </div>
               </div>
               {% endif %}
@@ -134,15 +136,15 @@
                        <p>Area:{{i.propertysize}}Sqft</p>
                        <p>Bedrooms:{{i.bedrooms}}</p>
                        <p>Bathrooms:{{i.bathrooms}}</p>
-                       <p>Amount: ₹{{i.price}}</p>
+                       <p>Advance Amount: ₹{{i.price}}</p>
                        <p>{{i.propdesc}}</p>
                      
                        
                        <a href="{% url 'accounts:edit' i.ap_id %}"><button  class="send_btn" type="button" value="Update"style="width: 90px; background-color: darkcyan; border-radius: 20px;">Update</button></a>
-                       <a href="{% url 'accounts:delete' i.ap_id %}"><button  class="send_btn" type="button" value="Update"style="width: 90px; background-color: darkcyan; border-radius: 20px;">Delete</button></a> 
-
-                     
+                       <a href="{% url 'accounts:delete' i.ap_id %}"><button  class="send_btn" type="button" value="Update"style="width: 90px; background-color: red; border-radius: 20px;">Delete</button></a> 
                   </div>
+                  <a
+                        style="border-radius: 20px; background-color: cadetblue; height: 40px; width: 90px;" href="{%url 'accounts:view_fb' i.ap_id%}">View Feedbacks</a>
                </div>
             </div>
             {% endif %}

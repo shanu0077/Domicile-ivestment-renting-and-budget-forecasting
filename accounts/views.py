@@ -1,6 +1,11 @@
+from django.http import HttpResponse, FileResponse
+from xhtml2pdf import pisa
+from django.template.loader import render_to_string
+from django.shortcuts import redirect
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from .models import *
+from accounts.models import ab
 from django.contrib import messages
 from django.http import HttpResponse
 from django.http import HttpResponseNotAllowed
@@ -8,8 +13,12 @@ import pickle
 import datetime
 import numpy as np
 import json
+from django.shortcuts import get_object_or_404
 # from .forms import NormalUserForm, Hotel, CabDriverForm
 from .forms import NormalUserForm, HotelUserForm
+from io import BytesIO
+from django.template.loader import get_template
+import xhtml2pdf.pisa as pisa
 
 model = pickle.load(
     open(r'C:\Users\HP\Downloads\HotelRBS\banglore_home_prices_model.pickle', 'rb'))
@@ -59,19 +68,20 @@ def login_view(request):
 
 
 def appartment_user_view(request):
-    appartments = Appartment.objects.filter(status=1)   
+    appartments = Appartment.objects.filter(status=1)
     id = request.session['id']
     dis = NormalUser.objects.get(user_id=id)
-    today=datetime.datetime.now().date()
-    appartmentbooking=appartment_booking.objects.filter(status=1)
+    today = datetime.datetime.now().date()
+    appartmentbooking = appartment_booking.objects.filter(status=1)
+    feedback = comment.objects.all()
     for i in appartmentbooking:
-        if(i.start_date>=today) and (i.end_date>=today):
+        if (i.start_date >= today) and (i.end_date >= today):
             # appart_name = Appartment.objects.get(ap_id=i.appartment_id)
             Appartment.objects.filter(ap_id=i.appartment_id).update(status=0)
-        if(i.end_date < today):
+        if (i.end_date < today):
             # appart_name = Appartment.objects.get(ap_id=i.appartment_id)
             Appartment.objects.filter(ap_id=i.appartment_id).update(status=1)
-    return render(request, 'user_appartment.html', {'dis': dis, 'appartments': appartments})
+    return render(request, 'user_appartment.html', {'dis': dis, 'appartments': appartments, 'feedback': feedback})
 
 
 def all_users(request):
@@ -146,23 +156,25 @@ def booking(request, name):
     id = request.session['id']
     dis = NormalUser.objects.get(user_id=id)
     appartments = Appartment.objects.get(appartmentname=name)
-    return render(request, 'booking.html',{'dis':dis,'appartments':appartments})
- 
+    return render(request, 'booking.html', {'dis': dis, 'appartments': appartments})
+
+
 def bookings(request, name):
     id = request.session['id']
     dis = NormalUser.objects.get(user_id=id)
     appartments = Appartment.objects.get(appartmentname=name)
-    return render(request, 'bookings.html',{'dis':dis,'appartments':appartments})
+    return render(request, 'bookings.html', {'dis': dis, 'appartments': appartments})
+
 
 def edit(request, id):
     appartments = Appartment.objects.get(ap_id=id)
     return render(request, 'edit.html', {'appartments': appartments})
 
+
 def adminappart(request):
     appartments = Appartment.objects.all()
     return render(request, 'adminappart.html', {'appartments': appartments})
 
-from django.shortcuts import redirect
 
 def delete(request, id):
     # Get the apartment object to delete
@@ -174,12 +186,14 @@ def delete(request, id):
     # Redirect the user to the apartment admin view
     return redirect('accounts:admin')
 
-def bookings(request):
-    bookings = appartment_bookings.objects.all()
-    context = {
-        'appartment_bookings': bookings
-    }
-    return render(request, 'bookings.html', context)
+
+# def bookings1(request):
+#     bookings = ab.objects.all()
+#     context = {
+#         'appartment_bookings': bookings
+#     }
+#     return render(request, 'bookings.html', context)
+
 
 def editbtn(request, id):
     appartments = Appartment.objects.get(ap_id=id)
@@ -198,73 +212,120 @@ def editbtn(request, id):
         price = request.POST.get('price')
         prt = request.POST.get('prt')
         Appartment.objects.filter(ap_id=id).update(appartmentname=apname, propertytype=ptype, address=adrs, location=location,
-                                                           zipcode=zip, year=yr, propertysize=ps, bedrooms=nb,
-                                                           bathrooms=nba, furnishing=fur, availability=ava,
-                                                           price=price, propdesc=prt)
+                                                   zipcode=zip, year=yr, propertysize=ps, bedrooms=nb,
+                                                   bathrooms=nba, furnishing=fur, availability=ava,
+                                                   price=price, propdesc=prt)
     return redirect('accounts:admin')
 
-def paymentpage(request,name,price):
+
+def paymentpage(request, name, price):
     id = request.session['id']
     dis = NormalUser.objects.get(user_id=id)
     appartments = Appartment.objects.get(appartmentname=name)
-    if request.method =="POST":
-        st_date=request.POST.get('check-in-date')
-        ed_date=request.POST.get('check-out-date')
-    return render(request, 'payment.html',{'dis':dis,'appartment':appartments,'price':price,'st_date':st_date,'ed_date':ed_date})
+    if request.method == "POST":
+        st_date = request.POST.get('check-in-date')
+        ed_date = request.POST.get('check-out-date')
+    return render(request, 'payment.html', {'dis': dis, 'appartment': appartments, 'price': price, 'st_date': st_date, 'ed_date': ed_date})
 
-def paypage(request,name,price):
+
+def paypage(request, name, price):
     id = request.session['id']
     dis = NormalUser.objects.get(user_id=id)
     appartments = Appartment.objects.get(appartmentname=name)
-    if request.method =="POST":
-        st_date=request.POST.get('check-in-date')
-    return render(request, 'payment copy.html',{'dis':dis,'appartment':appartments,'price':price,'st_date':st_date})
+    if request.method == "POST":
+        st_date = request.POST.get('check-in-date')
+    return render(request, 'payment copy.html', {'dis': dis, 'appartment': appartments, 'price': price, 'st_date': st_date})
 
 
-def payment(request,name):
+def payment(request, name):
     id = request.session['id']
     dis = NormalUser.objects.get(user_id=id)
     appartments = Appartment.objects.get(appartmentname=name)
-    if request.method =="POST":
-        price=request.POST.get('price')
-        st_date=request.POST.get('start_date')
-        ed_date=request.POST.get('end_date')
-        ob=appartment_booking()
-        ob.appartment_id=appartments.ap_id
-        ob.appartment_name=appartments.appartmentname
-        ob.user_id=dis.user_id
-        ob.user=dis.username
-        ob.price=price
-        ob.start_date=st_date
-        ob.end_date=ed_date
-        ob.status=1
-        ob.payment_status=1
+    if request.method == "POST":
+        price = request.POST.get('price')
+        st_date = request.POST.get('start_date')
+        ed_date = request.POST.get('end_date')
+        ob = appartment_booking()
+        ob.appartment_id = appartments.ap_id
+        ob.appartment_name = appartments.appartmentname
+        ob.user_id = dis.user_id
+        ob.user = dis.username
+        ob.price = price
+        ob.start_date = st_date
+        ob.end_date = ed_date
+        ob.status = 1
+        ob.payment_status = 1
         ob.save()
         return render(request, 'payments.html')
 
-def pay(request,name):
+
+def pay(request, name):
     id = request.session['id']
     dis = NormalUser.objects.get(user_id=id)
     appartments = Appartment.objects.get(appartmentname=name)
-    
 
-    if request.method =="POST":
-        price=request.POST.get('price')
-        st_date=request.POST.get('start_date')
-        ob=appartment_bookings()
-        ob.appartment_id=appartments.ap_id
-        ob.appartment_name=appartments.appartmentname
-        ob.user_id=dis.user_id
-        ob.user=dis.username
-        ob.price=price
-        ob.date=st_date
-        ob.status=1
-        ob.payment_status=1
+    if request.method == "POST":
+        price = request.POST.get('price')
+        st_date = request.POST.get('start_date')
+        ob = ab()
+        ob.appartment_id = appartments.ap_id
+        ob.appartment_name = appartments.appartmentname
+        ob.user_id = dis.user_id
+        ob.user = dis.username
+        ob.price = price
+        ob.date = st_date
+        ob.status = 1
+        ob.payment_status = 1
+        context = {
+            'dis': dis,
+            'appartment_id': appartments.ap_id,
+            'appartmentname': appartments.appartmentname,
+            'price': price,
+            'date': st_date,
+        }
         ob.save()
         Appartment.objects.filter(appartmentname=name).update(status=0)
-        return render(request, 'payments.html')
-    
-def payments(request):
+        # render the HTML template as a string
+        html_string = render_to_string('payment_bill.html', context)
+        # create an HTTP response object
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="my_pdf.pdf"'
+        # create a buffer to store the PDF content
+        buffer = BytesIO()
+        # generate the PDF from the HTML content and save it to the buffer
+        pisa_status = pisa.CreatePDF(
+            html_string, dest=buffer, encoding='utf-8')
+        # check if there were any errors during PDF generation
+        if pisa_status.err:
+            return HttpResponse('Error creating PDF: %s' % pisa_status.err, status=400)
+        # get the PDF content from the buffer
+        pdf = buffer.getvalue()
+        # close the buffer
+        buffer.close()
+        # write the PDF content to the HTTP response
+        response.write(pdf)
+        # return the HTTP response object
+        return response
+
+        return redirect('payments')
+
+
+def payments(request, context):
+    # from django.http import HttpResponse, FileResponse
+    # from django.template.loader import render_to_string
+    # from io import BytesIO
+    # from xhtml2pdf import pisa
+
+    # html_string = render_to_string('payment_bill.html', context)
+    # response = HttpResponse(content_type='application/pdf')
+    # response['Content-Disposition'] = 'attachment; filename="PaymentBill.pdf"'
+    # buffer = BytesIO()
+    # pisa_status = pisa.CreatePDF(html_string, dest=buffer, encoding='utf-8')
+    # if pisa_status.err:
+    #     return HttpResponse('Error creating PDF: %s' % pisa_status.err, status=400)
+    # pdf = buffer.getvalue()
+    # buffer.close()
+    # response.write(pdf)
     return render(request, 'payments.html')
 
 
@@ -331,11 +392,13 @@ def admin(request):
     appartments = Appartment.objects.all()
     return render(request, 'admin.html', {'appartments': appartments})
 
+
 def search(request):
     if request.method == 'POST':
-        loc= request.POST.get('hotelloc')
+        loc = request.POST.get('hotelloc')
         loca = Appartment.objects.filter(location=loc)
         return render(request, 'search.html', {'appartments': loca})
+
 
 def appartments(request):
     if request.method == 'POST':
@@ -371,33 +434,73 @@ def appartments(request):
         ob.price = price
         ob.cimage = img
         ob.propdesc = prt
-        ob.status=1
+        ob.status = 1
         ob.save()
     return redirect('accounts:admin')
+
 
 def view_booking_details(request):
     id = request.session['id']
     dis = NormalUser.objects.get(user_id=id)
-    booking=appartment_booking.objects.filter(user_id=id)
-    appartment=Appartment.objects.all()
-    return render(request,'view_booking.html',{'booking':booking,'appartment':appartment})
+    booking = appartment_booking.objects.filter(user_id=id)
+    appartment = Appartment.objects.all()
+    return render(request, 'view_booking.html', {'booking': booking, 'appartment': appartment})
+
 
 def admin_view_booking_appartment(request):
+    appb = ab.objects.all()
     if request.GET.get('start_date') and request.GET.get('end_date'):
-        start_date = datetime.strptime(request.GET['start_date'], '%Y-%m-%d').date()
-        end_date = datetime.strptime(request.GET['end_date'], '%Y-%m-%d').date()
-        appartments = appartment_booking.objects.filter(start_date__lte=end_date, end_date__gte=start_date)
+        start_date = datetime.strptime(
+            request.GET['start_date'], '%Y-%m-%d').date()
+        end_date = datetime.strptime(
+            request.GET['end_date'], '%Y-%m-%d').date()
+        appartments = appartment_booking.objects.filter(
+            start_date__lte=end_date, end_date__gte=start_date)
+        appb = ab.objects.all()
     else:
+        appb = ab.objects.all()
         appartments = appartment_booking.objects.all()
-    return render(request,'viewbookingadmin.html',{'appartments':appartments})
+    return render(request, 'viewbookingadmin.html', {'appartments': appartments, 'appb': appb})
 
     if request.method == 'GET':
         start_date = request.GET.get('start_date')
         end_date = request.GET.get('end_date')
         if start_date and end_date:
             # Query the database to find all appartment bookings between start_date and end_date
-            appartment_bookings = appartment_booking.objects.filter(start_date__gte=start_date, end_date__lte=end_date)
+            appartment_bookings = appartment_booking.objects.filter(
+                start_date__gte=start_date, end_date__lte=end_date)
             return render(request, 'search_results.html', {'appartment_bookings': appartment_bookings})
         else:
             # Render the search form again with an error message
             return render(request, 'search_form.html', {'error': 'Please enter both start date and end date.'})
+
+
+def fb(request, id):
+    if request.method == "POST":
+        cmt = request.POST.get('comment')
+        appartment = Appartment.objects.get(ap_id=id)
+        uid = request.session['id']
+        username = NormalUser.objects.get(user_id=uid)
+        ob = comment()
+        ob.appartment_name = appartment.appartmentname
+        ob.user = username.username
+        ob.cmt = cmt
+        ob.ap_id = appartment.ap_id
+        ob.save()
+        return HttpResponse('commented')
+
+
+def view_fb(request, id):
+    cmt = comment.objects.filter(ap_id=id)
+    return render(request, 'feedback.html', {'cmt': cmt})
+
+
+def delete_comment(request, pk):
+    cmt = comment.objects.get(pk=pk)
+    # Get the apartment object to delete
+    comment = get_object_or_404(cmt, pk=pk)
+
+    # Delete the apartment object
+    comment.delete()
+    return redirect('feedback')
+    # Redirect the user to the apartment admin view

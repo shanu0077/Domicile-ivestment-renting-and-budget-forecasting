@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+
+   
+
+
+    <center><h1>Feedbacks</h1></center>
+    <div class="comment-box">
+      {% for i in cmt %}
+      <div class="comment">
+        <div class="username">User : {{i.user}}</div>
+        <div class="text">Feedback : {{i.cmt}}</div>
+          <!-- <a href="{% url 'accounts:delete_comment' i.pk %}"><button type="button" class="delete-button">Delete</button></a> -->
+      </div>
+      {% endfor %}
+    </div>
+</body>
+<style>
+    .comment-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.comment {
+  margin-bottom: 10px;
+}
+
+.username {
+  font-weight: bold;
+}
+
+.text {
+  margin-top: 5px;
+}
+
+</style>
+</html>

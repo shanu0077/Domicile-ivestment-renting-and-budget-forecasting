@@ -23,5 +23,6 @@ admin.site.register(HotelOwner, HotelAdmin)
 
 admin.site.register(CabDriver)
 admin.site.register(appartment_booking)
-admin.site.register(appartment_bookings)
+admin.site.register(ab)
 admin.site.register(Appartment)
+admin.site.register(comment)
